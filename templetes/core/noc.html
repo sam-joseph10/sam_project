@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+{%load static %}
+<html>
+<head>
+  <title>No Objection Certificate</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 20mm;
+      margin: 10mm auto;
+      border: 1px solid #ccc; /* Optional */
+      box-sizing: border-box;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.9em;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .logo {
+      width: 60px;
+      margin-right: 10px;
+    }
+    .college-info {
+      text-align: left; /* Align to the left */
+    }
+    .society-name {
+      font-size: 0.9em;
+    }
+    .college-name {
+      font-weight: bold;
+      font-size: 1.4em; /* Make it larger */
+    }
+    .address {
+      font-size: 0.8em;
+    }
+    .header-separator {
+      border-bottom: 1px solid black;
+      margin-bottom: 20px;
+    }
+    .ref-date {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+    }
+    .to-address {
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      line-height: 1.4;
+    }
+    .subject {
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .declaration-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .declaration-text {
+      margin-bottom: 15px;
+      line-height: 1.5;
+      text-align: justify;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 0.9em;
+      margin-top: 30px;
+    }
+    .principal-signature {
+      text-align: right;
+      line-height: 1.2; /* Adjust line height */
+    }
+    .principal-line {
+      border-bottom: 1px solid black; /* Add a line for signature */
+      width: 100px; /* Adjust width as needed */
+      margin-left: auto; /* Align to the right */
+      margin-bottom: 5px; /* Add some space below the line */
+    }
+
+    /* Styles for printing */
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .page {
+        margin: 0;
+        border: none;
+        width: 210mm;
+        min-height: 297mm;
+      }
+    }
+    .download-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        font-size: 16px;
+        padding: 10px 20px;
+        background-color: darkblue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+
+  <div class="page" id="certificate">
+    <div class="header-top">
+      <div>
+        Sri Maata Educational Society<sup>®</sup>
+      </div>
+      <div style="text-align: right;">
+        CC - 1112<br>
+        CC - P12GSD0033
+      </div>
+    </div>
+    <div class="logo-container">
+        <img id="collegeLogo" src="{% static 'images/colleg_logo.png' %}" class="logo">
+      <div class="college-info">
+        <div class="college-name">SRI MAATA DEGREE COLLEGE</div>
+        <div class="address">(AFFILIATED TO VSKU , BALLARI , CC - P12GSD0033 )</div>
+      </div>
+    </div>
+    <div class="header-separator"></div>
+    <div class="ref-date">
+      Ref. <br>
+      Date: 15/03/2025
+    </div>
+
+    <div class="to-address">
+      To,<br>
+      <br>
+      <br>
+      <br>
+      
+    </div>
+
+    <div class="subject">
+      Subject: No Objection Certificate (NOC) for Internship
+    </div>
+
+    <div class="declaration-title">
+      DECLARATION FROM INSTITUTE / COLLEGE / UNIVERSITY
+    </div>
+
+    <div class="declaration-text">
+      This is to certify that  Mr.  <strong>{{ student.full_name|upper }}</strong>   Roll No  <strong>{{ student.student_id |upper }}</strong> is a Bonafide
+      student of Sri Maata Degree College, Hosapete - 583201, since 2023. He is pursuing
+      <strong><{{ student.course_name|upper }} </strong> Programme in the Department of <strong>{{ student.branch|upper }}</strong> .
+    </div>
+
+    <div class="declaration-text">
+      Sri Maata Degree College, Hosapete has "no objection" for Mr.<strong>{{ student.full_name|upper }} 
+       to undergo a Two - month Internship program to be held at _______________________
+      ______________________institution .
+    </div>
+
+    <div class="footer">
+      <div>
+        Place : Hosapete<br>
+        Date : 15/03/2025
+      </div>
+      <div class="principal-signature">
+        <div class="principal-line"></div>
+        Principal<br>
+        Sri Maata Degree College
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      let certificateElement = document.querySelector("#certificate");
+      let logo = document.getElementById("collegeLogo");
+
+      if (!certificateElement) {
+        console.error("Error: Element with ID 'certificate' not found.");
+        alert("Failed to generate PDF. Please try again.");
+        return;
+      }
+
+      // Ensure the image is fully loaded
+      if (logo && !logo.complete) {
+        await new Promise(resolve => {
+          logo.onload = resolve;
+          logo.onerror = resolve; // Prevent blocking if the image fails
+        });
+      }
+
+      try {
+        await new Promise(resolve => setTimeout(resolve, 500)); // Small delay before capture
+
+        let canvas = await html2canvas(certificateElement, {
+          scale: 2, // Higher scale for better quality
+          useCORS: true
+        });
+
+        let imgData = canvas.toDataURL("image/png");
+
+        let pdf = new jsPDF("p", "mm", "a4");
+        let imgWidth = 210;
+        let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        pdf.save("NOC_CERTIFIACTE.pdf");
+
+      } catch (error) {
+        console.error("PDF Generation Error:", error);
+        alert("Failed to generate PDF. Please try again.");
+      }
+    }
+  </script>
+
+</body>
+</html>

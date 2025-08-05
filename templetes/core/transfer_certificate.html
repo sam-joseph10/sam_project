@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Certificate</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .download-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .certificate-container {
+            width: 794px; /* A4 width in px */
+            height: 1123px; /* A4 height in px */
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 3px solid black;
+        }
+
+        .certificate-header {
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .certificate-header h2 {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        td {
+            border: 2px solid black;
+            padding: 10px;
+        }
+
+        .signature {
+            text-align: center;
+            font-weight: bold;
+            font-size: 8px;
+            height: 40px;
+            vertical-align: bottom;
+            padding-bottom: 10px;
+        }
+
+        .note {
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: justify;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Download PDF Button -->
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+
+    <div class="certificate-container" id="certificate">
+        <div class="certificate-header">
+            <h2>Education Department of Karnataka State</h2>
+            <h2>Transfer Certificate</h2>
+            <p>(For Primary / High / Higher Secondary Schools)</p>
+        </div>
+        <p><strong>Transfer Certificate No:</strong> {{ student.tc_serial_no  }}</p>
+        <table>
+            <tr>
+                <td colspan="3">1. Name of the School: <b>{{ student.school_name |upper}}</b></td>
+            </tr>
+            <tr>
+                <td>2. Admission No.: <b>{{ student.admission_no|upper }}</b></td>
+                <td>3. Cumulative Record No.: <b>{{ student.record_no |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">4. Name of the Pupil in Full: <b>{{ student.full_name |upper}}</b></td>
+            </tr>
+            <tr>
+                <td>5. Sex: <b>{{ student.gender |upper}}</b></td>
+                <td>6. Pupil's Aadhar Card No.: <b>{{ student.aadhar_no |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">7. S.T.S. No.: <b>{{ student.sts_no|upper }}</b></td>
+            </tr>
+            <tr>
+                <td>8. Nationality: <b>{{ student.nationality |upper}}</b></td>
+                <td>9. Religion: <b>{{ student.religion|upper }}</b></td>
+            </tr>
+            <tr>
+                <td>10. Caste: <b>{{ student.caste |upper}}</b></td>
+                <td>11. Sub Caste: <b>{{ student.sub_caste |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">12. *Name of the Father:{{ student.father_name |upper}}  <br>&nbsp;  &nbsp; &nbsp;* Aadhar Card No.:{{ student.father_aadhar |upper}}</td>
+            </tr>
+            <tr>
+                <td colspan="3">13. *Name of the Mother:{{ student.mother_name|upper }} <br>&nbsp;  &nbsp; &nbsp; *Aadhar Card No.: {{ student.mother_aadhar |upper}}</td>
+            </tr>
+            <tr>
+                <td>14. Scheduled Caste/Tribe?: <b>{{ student.sc_st |upper}}</b></td>
+                <td>15. Qualified for promotion?: <b>{{ student.promotion_status|upper }}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">16. *Date of Birth:{{ student.date_of_birth |upper}}<br>&nbsp;  &nbsp; &nbsp; *Place of Birth: ({{ student.place_of_birth|upper }})</td>
+            </tr>
+            <tr>
+                <td colspan="3">17. Standard at leaving (in words): <b>{{ student.last_standard |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">18. Higher Standards:<br>(a) Languages: <b>{{ student.languages |upper}}<br>(b) Electives: <b>{{ student.electives |upper}}</td>
+           
+        
+            </tr>
+            <tr>
+                <td>19. Medium of Instruction: <b>{{ student.medium |upper}}</b></td>
+                <td>20. Admission Date: <b>{{ student.admission_date|upper }}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">21. Fees paid?: <b>{{ student.fees_paid|upper }}</b></td>
+            </tr>
+            <tr>
+                <td>22. Scholarship details: <b>{{ student.scholarship_details |upper}}</b></td>
+                <td>23. Fee concessions: <b>{{ student.fee_concessions |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">24. Medically Examined?: <b>{{ student.medical_exam |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">25. Last Attendance Date: <b>{{ student.last_attendance_date |upper }}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">26. TC Application Date: <b>{{ student.tc_application_date |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">27. TC Issue Date: <b>{{ student.tc_issue_date |upper}}</b></td>
+            </tr>
+            <tr>
+                <td>28. Total School Days: <b>{{ student.total_school_days |upper}}</b></td>
+                <td>29. Days Attended: <b>{{ student.days_attended |upper}}</b></td>
+            </tr>
+            <tr>
+                <td colspan="3">30. Character and Conduct: <b>{{ student.character_conduct |upper}}</b></td>
+            </tr>
+            <tr><td colspan="3" class="signature">Signature of the Head Master</td></tr>
+        </table>
+        <div class="note">
+            NOTE: The certificate should be granted on requisition from parent or guardian. In case of duplicate copies, a penalty fee of 1 rupee for Higher Secondary/Multi-purpose schools and 25 paise for Middle/Primary Schools should be collected (See Education Rule No. 36).
+        </div>
+    </div>
+
+    <script>
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const certificate = document.getElementById('certificate');
+
+            html2canvas(certificate, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                doc.save('Transfer_Certificate.pdf');
+            });
+        }
+    </script>
+
+</body>
+</html>
